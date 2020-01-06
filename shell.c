@@ -84,29 +84,40 @@ static void cleanup(int n)
 }
 
 
+int execarg(char* arg){
+	printf("%s", arg);
+	return 0;
+}
 
 int main(int argc, char *argv[])
 {
-    // printf("%s\n", argv[0]);
-	// printf("%i\n", argc );
-
-	if(argc > 1){
+	if(argc == 2){
 		//Code for execution once
-		char cmd1[1024];
-		char space[1] = " ";
-		for(int k = 1; k < argc; k++){
-		    // strcat(cmd1, argv[k]);
 
-			 printf("\narg%d=%s", k, argv[k]);
+		int input = 0;
+		int first = 1;
 
+		char* cmd = malloc(strlen(argv[1]) + 2);
+		strcpy(cmd, argv[1]);
+		strcat(cmd, "\n");
 
+		char* next = strchr(cmd, '|'); /* Find first '|' */
 
+		printf("Line:%s cmd:%s next:%s\n", line, cmd, next);
 
+		while (next != NULL) {
+			/* 'next' points to '|' */
+			*next = '\0';
+			input = run(cmd, input, first, 0);
+
+			cmd = next + 1;
+			next = strchr(cmd, '|'); /* Find next '|' */
+			first = 0;
 		}
-		printf("\n");
-		// run(argv, 0, 0, 1);
+		input = run(cmd, input, first, 1);
 		return 0;
 	}
+
 	printf("SHELL: Type 'exit' or send EOF to exit.\n");
 	while (1) {
 		/* Print the command prompt */
@@ -122,7 +133,7 @@ int main(int argc, char *argv[])
 
 		char* cmd = line;
 		char* next = strchr(cmd, '|'); /* Find first '|' */
-
+		printf("Line:%s cmd:%s next:%s\n", line, cmd, next);
 		while (next != NULL) {
 			/* 'next' points to '|' */
 			*next = '\0';
@@ -155,8 +166,7 @@ static int run(char* cmd, int input, int first, int last)
 
 static char* skipwhite(char* s)
 {
-	while (isspace(*s))
- ++s;
+	while (isspace(*s)) ++s;
 	return s;
 }
 
@@ -180,6 +190,5 @@ static void split(char* cmd)
 		next[0] = '\0';
 		++i;
 	}
-
 	args[i] = NULL;
 }

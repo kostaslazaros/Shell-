@@ -5,7 +5,8 @@
 #include <netinet/in.h>
 #include <string.h>
 
-#define PORT 8080
+#include "port.h"
+
 
 int main(int argc, char const *argv[])
 {
@@ -45,17 +46,16 @@ int main(int argc, char const *argv[])
         perror("listen"); // Prints system error
         exit(EXIT_FAILURE);
     }
-    if ((new_socket = accept(server_fd, (struct sockaddr *)&address,
-                       (socklen_t*)&addrlen))<0)
+    if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0)
     {
         perror("accept");
         exit(EXIT_FAILURE);
     }
     while(1){
-        valread = read( new_socket , buffer, 1024);
-        printf("%s\n",buffer );
+        valread = read(new_socket , buffer, 1024);
+        printf("Mesage arrived to server: %s\n", buffer);
         send(new_socket , hello , strlen(hello) , 0 );
-        printf("Hello message sent\n");
+        printf("Message sent back to client\n");
         // printf("%s", valread);
     }
     return 0;
