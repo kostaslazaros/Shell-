@@ -4,9 +4,8 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
-
 #include "port.h"
-
+#include "shellfunc.c"
 
 int main(int argc, char const *argv[])
 {
@@ -15,7 +14,6 @@ int main(int argc, char const *argv[])
     int opt = 1;
     int addrlen = sizeof(address);
     char buffer[1024] = {0};
-    char *hello = "Hello from server";
 
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
@@ -51,12 +49,18 @@ int main(int argc, char const *argv[])
         perror("accept");
         exit(EXIT_FAILURE);
     }
+    dup2(new_socket, STDOUT_FILENO ); /* duplicate socket on stdout */
     while(1){
         valread = read(new_socket , buffer, 1024);
-        printf("Mesage arrived to server: %s\n", buffer);
-        send(new_socket , hello , strlen(hello) , 0 );
-        printf("Message sent back to client\n");
-        // printf("%s", valread);
+        // printf("Mesage arrived to server: %s\n", buffer);
+        // dup2( new_socket, STDERR_FILENO );  /* duplicate socket on stderr too */
+        // setbuf(buffer, NULL);
+        // memset(buffer, ' ', 1024*sizeof(char));
+
+        runshell(buffer);
+        // memset(buffer, ' ', 1024*sizeof(char));
+        // send(new_socket , hello , strlen(hello) , 0 );
+        // printf("Message sent back to client\n");
     }
     return 0;
 }

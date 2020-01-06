@@ -7,7 +7,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-
 /* The array below will hold the arguments: args[0] is the command. */
 static char* args[512];
 pid_t pid;
@@ -85,23 +84,19 @@ static void cleanup(int n)
 }
 
 
-
-
-int main(int argc, char *argv[])
+int runshell(char* argv)
 {
-	if(argc == 2){
 		//Code for execution once
-
 		int input = 0;
 		int first = 1;
 
-		char* cmd = malloc(strlen(argv[1]) + 2);
-		strcpy(cmd, argv[1]);
+		char* cmd = malloc(strlen(argv) + 2);
+		strcpy(cmd, argv);
 		strcat(cmd, "\n");
 
 		char* next = strchr(cmd, '|'); /* Find first '|' */
 
-		printf("Line:%s cmd:%s next:%s\n", line, cmd, next);
+		// printf("Line:%s cmd:%s next:%s\n", line, cmd, next);
 
 		while (next != NULL) {
 			/* 'next' points to '|' */
@@ -114,38 +109,7 @@ int main(int argc, char *argv[])
 		}
 		input = run(cmd, input, first, 1);
 		return 0;
-	}
 
-	printf("SHELL: Type 'exit' or send EOF to exit.\n");
-	while (1) {
-		/* Print the command prompt */
-		printf("~> ");
-		fflush(NULL);
-
-		/* Read a command line */
-		if (!fgets(line, 1024, stdin))
-			return 0;
-
-		int input = 0;
-		int first = 1;
-
-		char* cmd = line;
-		char* next = strchr(cmd, '|'); /* Find first '|' */
-		printf("Line:%s cmd:%s next:%s\n", line, cmd, next);
-		while (next != NULL) {
-			/* 'next' points to '|' */
-			*next = '\0';
-			input = run(cmd, input, first, 0);
-
-			cmd = next + 1;
-			next = strchr(cmd, '|'); /* Find next '|' */
-			first = 0;
-		}
-		input = run(cmd, input, first, 1);
-		cleanup(n);
-		n = 0;
-	}
-	return 0;
 }
 
 static void split(char* cmd);

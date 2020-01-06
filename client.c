@@ -39,7 +39,7 @@ int main(int argc, char const *argv[])
     while(1){
 		printf("~> ");
 		fflush(NULL);
-
+        memset(buffer, '\0', 1024*sizeof(char));
 		/* Read a command line */
 		if (!fgets(line, 1024, stdin))
 			return 0;
@@ -47,9 +47,10 @@ int main(int argc, char const *argv[])
 			exit(0);
         // printf("Sygkrisi: %i", strcmp(line, "exit"));
         send(sock , line , strlen(line) , 0 );
-        printf("Hello message sent to server\n");
+        // printf("Message sent to server: %s\n", line);
         valread = read(sock , buffer, 1024);
-        printf("Message from server returned: %s\n", buffer );
+        printf("%s\n", buffer );
+
     }
     return 0;
 }
