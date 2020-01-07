@@ -108,6 +108,7 @@ int runshell(char* argv)
 			first = 0;
 		}
 		input = run(cmd, input, first, 1);
+		cleanup(100);
 		return 0;
 
 }

@@ -46,21 +46,13 @@ int main(int argc, char const *argv[])
     }
     if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0)
     {
-        perror("accept");
+        perror("accept"); //accept since the socket and address are valid.
         exit(EXIT_FAILURE);
     }
     dup2(new_socket, STDOUT_FILENO ); /* duplicate socket on stdout */
     while(1){
         valread = read(new_socket , buffer, 1024);
-        // printf("Mesage arrived to server: %s\n", buffer);
-        // dup2( new_socket, STDERR_FILENO );  /* duplicate socket on stderr too */
-        // setbuf(buffer, NULL);
-        // memset(buffer, ' ', 1024*sizeof(char));
-
         runshell(buffer);
-        // memset(buffer, ' ', 1024*sizeof(char));
-        // send(new_socket , hello , strlen(hello) , 0 );
-        // printf("Message sent back to client\n");
     }
     return 0;
 }

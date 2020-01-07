@@ -18,7 +18,6 @@ int command_pipe[2];
 
 static int run(char* cmd, int input, int first, int last);
 static char line[1024];
-static int n = 0; /* number of calls to 'command' */
 /*
  * Handle commands separatly
  * input: return value from previous command (useful for pipe file descriptor)
@@ -33,7 +32,9 @@ static int n = 0; /* number of calls to 'command' */
  * So if 'command' returns a file descriptor, the next 'command' has this
  * descriptor as its 'input'.
  */
-static int command(int input, int first, int last)
+
+
+static int command(int input, int first, int last) // Handle commands separatly(input returns value from previous command, first returns)
 {
 	int pipettes[2];
 
@@ -85,8 +86,6 @@ static void cleanup(int n)
 }
 
 
-
-
 int main(int argc, char *argv[])
 {
 	if(argc == 2){
@@ -95,9 +94,9 @@ int main(int argc, char *argv[])
 		int input = 0;
 		int first = 1;
 
-		char* cmd = malloc(strlen(argv[1]) + 2);
-		strcpy(cmd, argv[1]);
-		strcat(cmd, "\n");
+		char* cmd = malloc(strlen(argv[1]) + 2); // Used for adding a " " at the end of the command
+		strcpy(cmd, argv[1]);	// Making a copy of the command
+		strcat(cmd, "\n"); // Adding in the new line character
 
 		char* next = strchr(cmd, '|'); /* Find first '|' */
 
@@ -115,23 +114,19 @@ int main(int argc, char *argv[])
 		input = run(cmd, input, first, 1);
 		return 0;
 	}
-
 	printf("SHELL: Type 'exit' or send EOF to exit.\n");
 	while (1) {
 		/* Print the command prompt */
 		printf("~> ");
 		fflush(NULL);
-
 		/* Read a command line */
 		if (!fgets(line, 1024, stdin))
 			return 0;
-
 		int input = 0;
 		int first = 1;
-
 		char* cmd = line;
 		char* next = strchr(cmd, '|'); /* Find first '|' */
-		printf("Line:%s cmd:%s next:%s\n", line, cmd, next);
+		// printf("Line:%s cmd:%s next:%s\n", line, cmd, next);
 		while (next != NULL) {
 			/* 'next' points to '|' */
 			*next = '\0';
@@ -142,13 +137,14 @@ int main(int argc, char *argv[])
 			first = 0;
 		}
 		input = run(cmd, input, first, 1);
-		cleanup(n);
-		n = 0;
+		cleanup(100);
 	}
 	return 0;
 }
 
+
 static void split(char* cmd);
+
 
 static int run(char* cmd, int input, int first, int last)
 {
@@ -161,6 +157,7 @@ static int run(char* cmd, int input, int first, int last)
 	}
 	return 0;
 }
+
 
 static char* skipwhite(char* s)
 {
