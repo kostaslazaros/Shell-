@@ -1,22 +1,13 @@
 all: shell client server
 
-shell: shell.o
-	gcc -o shell shell.o -s
+shell: shell.c shellfunc.c
+	gcc -o shell shell.c shellfunc.c
 
-client: client.o
-	gcc -o client client.o -s
+client: client.c
+	gcc -o client client.c
 
-server: server.o
-	gcc -o server server.o -s
-
-shell.o: shell.c
-	gcc -c shell.c -o shell.o
-
-client.o: client.c
-	gcc -c client.c -o client.o
-
-server.o: server.c
-	gcc -c server.c -o server.o
+server: server.c
+	gcc -o server server.c
 
 clean:
-	rm -f shell client server shell.o client.o server.o
+	rm -f shell client server

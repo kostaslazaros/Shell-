@@ -36,15 +36,18 @@ int main(int argc, char const *argv[])
         return -1;
     }
     // Otherwise send the client message and wait to reveive the server message
+    printf("Connected on server port %i\n", PORT);
     while(1){
-		printf("~> ");
+		printf(":> ");
 		fflush(NULL);
         memset(buffer, '\0', 1024*sizeof(char));
 		/* Read a command line */
 		if (!fgets(line, 1024, stdin))
 			return 0;
-        if (strcmp(line, "exit") == 10)
+        if (strcmp(line, "exit") == 10){
+            send(sock, "terminate", strlen("terminate"), 0);
 			exit(0);
+        }
         // printf("Sygkrisi: %i", strcmp(line, "exit"));
         send(sock , line , strlen(line) , 0 );
         // printf("Message sent to server: %s\n", line);
