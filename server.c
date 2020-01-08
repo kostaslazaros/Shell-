@@ -22,7 +22,7 @@ int main(int argc, char const *argv[])
         exit(EXIT_FAILURE);
     }
 
-    // Forcefully attaching socket to the port 8080
+    // Σύνδεση του socket στην πόρτα 8081
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
     {
         perror("setsockopt");

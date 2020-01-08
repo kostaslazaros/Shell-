@@ -9,33 +9,28 @@
 #include "shellfunc.h"
 
 
-int command(int input, int first, int last)
+int command(int input, int first, int last) // Εκτέλεση εντολών και redirection (για τα pipes)
 {
 	int pipettes[2];
 	/* Invoke pipe */
 	pipe(pipettes);
 	pid = fork();
 
-	/*
-	 SCHEME:
-	 	STDIN --> O --> O --> O --> STDOUT
-	*/
-
 	if (pid == 0) {
 
 		if (first == 1 && last == 0 && input == 0) {
-			// First command
+			// Redirect για πρώτη εντολή
 			dup2(pipettes[WRITE], STDOUT_FILENO);
 		} else if (first == 0 && last == 0 && input != 0) {
-			// Middle command
+			// Redirect για δεύτερη εντολή
 			dup2(input, STDIN_FILENO);
 			dup2(pipettes[WRITE], STDOUT_FILENO);
 		} else {
-			// Last command
+			// Για την τελευταία εντολή
 			dup2(input, STDIN_FILENO);
 		}
-		if (execvp(args[0], args) == -1)
-			_exit(EXIT_FAILURE); // If child fails
+		if (execvp(args[0], args) == -1) // Εδώ εκτελούνται οι εντολές
+			_exit(EXIT_FAILURE); // Σε περίπτωση που αποτύχει το child process
 	}
 
 	if (input != 0)
@@ -44,7 +39,7 @@ int command(int input, int first, int last)
 	// Nothing more needs to be written
 	close(pipettes[WRITE]);
 
-	// If it's the last command, nothing more needs to be read
+	// Αν είναι η τελευταία εντολή τότε δεν χρειάζεται να διαβαστεί κάτι άλλο (pipe closing...)
 	if (last == 1)
 		close(pipettes[READ]);
 
@@ -52,7 +47,7 @@ int command(int input, int first, int last)
 }
 
 
-void cleanup(int n)
+void cleanup(int n) // Συνάρτηση αναμονής (καθυστέρηση της κύριας διαδικασίας για να τυπωθούν τα αποτελέσματα των child processes στην οθόνη)
 {
 	int i;
 	for (i = 0; i < n; ++i)
@@ -69,12 +64,12 @@ int runshell(char* argv)
 		char* cmd = malloc(strlen(argv) + 2);
 		strcpy(cmd, argv);
 		strcat(cmd, "\n");
-		char* next = strchr(cmd, '|'); /* Find first '|' */
+		char* next = strchr(cmd, '|'); // Βρίσκουμε το πρώτο '|' το οποίο δηλώνει pipe
 
 		while (next != NULL) {
 			/* 'next' points to '|' */
 			*next = '\0';
-			input = run(cmd, input, first, 0);
+			input = run(cmd, input, first, 0); // Το input οδηγείται στην συνάρτηση run προκειμένου να εκτελεστεί(η run κανει έλεγχο του string για exit και καλει την συνάρτηση command)
 
 			cmd = next + 1;
 			next = strchr(cmd, '|'); /* Find next '|' */
@@ -82,11 +77,12 @@ int runshell(char* argv)
 		}
 		input = run(cmd, input, first, 1);
 		cleanup(100);
+		free(cmd); // Απελευθέρωση μνήμης που δεσμεύτηκε με malloc
 		return 0;
 }
 
 
-int run(char* cmd, int input, int first, int last)
+int run(char* cmd, int input, int first, int last) // Έλεγχος για exit και κλείση στην συνάρτηση command για εκτέλεση εντολής
 {
 	split(cmd);
 	if (args[0] != NULL) {
@@ -98,14 +94,14 @@ int run(char* cmd, int input, int first, int last)
 }
 
 
-char* skipwhite(char* s)
+char* skipwhite(char* s) // Περνάει/αγνοεί τα κενά
 {
 	while (isspace(*s)) ++s;
 	return s;
 }
 
 
-void split(char* cmd)
+void split(char* cmd) // Σπάει το string σε κομμάτια χωρίς κενά
 {
 	cmd = skipwhite(cmd);
 	char* next = strchr(cmd, ' ');
@@ -127,3 +123,5 @@ void split(char* cmd)
 	}
 	args[i] = NULL;
 }
+
+

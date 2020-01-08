@@ -23,14 +23,12 @@ int main(int argc, char *argv[])
 
 		char* next = strchr(cmd, '|'); /* Find first '|' */
 
-		// printf("Line:%s cmd:%s next:%s\n", line, cmd, next);
-
 		while (next != NULL) {
-			/* 'next' points to '|' */
+			// To 'next' σημαδεύει τo '|'
 			*next = '\0';
 			input = run(cmd, input, first, 0);
 			cmd = next + 1;
-			next = strchr(cmd, '|'); /* Find next '|' */
+			next = strchr(cmd, '|'); // Εύρεση επόμενου '|'
 			first = 0;
 		}
 		input = run(cmd, input, first, 1);
@@ -39,11 +37,11 @@ int main(int argc, char *argv[])
 
 	printf("SHELL: Type 'exit' or send EOF to exit.\n");
 	while (1) {
-		/* Print the command prompt */
+		// Εκτύπωση του command prompt
 		printf("~> ");
 		fflush(NULL);
 
-		/* Read a command line */
+		// Ανάγνωση εντολής
 		if (!fgets(line, 1024, stdin))
 			return 0;
 
@@ -51,14 +49,14 @@ int main(int argc, char *argv[])
 		int first = 1;
 
 		char* cmd = line;
-		char* next = strchr(cmd, '|'); /* Find first '|' */
+		char* next = strchr(cmd, '|'); // Εύρεση του πρώτου '|'
 
 		while (next != NULL) {
 			/* 'next' points to '|' */
 			*next = '\0';
 			input = run(cmd, input, first, 0);
 			cmd = next + 1;
-			next = strchr(cmd, '|'); /* Find next '|' */
+			next = strchr(cmd, '|'); // Εύρεση του επόμενου '|'
 			first = 0;
 		}
 		input = run(cmd, input, first, 1);

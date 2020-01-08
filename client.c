@@ -12,7 +12,6 @@ int main(int argc, char const *argv[])
 {
     int sock = 0, valread;
     struct sockaddr_in serv_addr;
-    char *hello = "Geia kai xara sas";
     char buffer[1024] = {0};
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -23,20 +22,20 @@ int main(int argc, char const *argv[])
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
 
-    // Convert IPv4 and IPv6 addresses from text to binary form
+    // Μετατροπή IPv4 and IPv6 διευθύνσεων από text to δυαδική μορφή
     if(inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr)<=0)
     {
         printf("\nInvalid address/ Address not supported \n");
         return -1;
     }
-    // If connection to the socket (adress is invalid print an error message and just exit)
+    // Περίπτωση αποτυχίας σύνδεσης στο socket (μη έγκυρη διέυθυνση)
     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
     {
         printf("\nConnection Failed \n");
         return -1;
     }
-    // Otherwise send the client message and wait to reveive the server message
-    printf("Connected on server port %i\n", PORT);
+    // Ο client στέλνει μήνυμα στον server και περιμένει την απάντηση από τον server
+    printf("Connected on server port %i\n", PORT); // Ο client συνδέθηκε με επιτυχία (εκτύπωση αντίστοιχου μηνύματος)
     while(1){
 		printf(":> ");
 		fflush(NULL);
@@ -45,12 +44,10 @@ int main(int argc, char const *argv[])
 		if (!fgets(line, 1024, stdin))
 			return 0;
         if (strcmp(line, "exit") == 10){
-            send(sock, "terminate", strlen("terminate"), 0);
+            send(sock, "terminate", strlen("terminate"), 0); // Σε περίπτωση αποσύνδεσης το socket κάνει terminate
 			exit(0);
         }
-        // printf("Sygkrisi: %i", strcmp(line, "exit"));
         send(sock , line , strlen(line) , 0 );
-        // printf("Message sent to server: %s\n", line);
         valread = read(sock , buffer, 1024);
         printf("%s\n", buffer );
 
