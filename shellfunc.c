@@ -60,7 +60,7 @@ int runshell(char* argv) // Εκτέλεση του shell
 	char* cmd = malloc(strlen(argv) + 2);
 	strcpy(cmd, argv);
 	strcat(cmd, "\n");
-	//Code for execution once
+	// Εκτέλεση μια φορά
 	run_children(cmd);
 	free(cmd); // Απελευθέρωση μνήμης που δεσμεύτηκε με malloc
 	return 0;
@@ -69,6 +69,10 @@ int runshell(char* argv) // Εκτέλεση του shell
 
 int run_children(char* cmd)
 {
+
+	/* Για το redirection του output δεν χρησιμοποιήσαμε το ">>". Χρησιμοποιήσαμε pipe το
+	οποίο κάνει redirect το output σε file. Η εντολή που χρησιμοποιούμε είναι η εξής:
+	*insert command here* | tee *insert_filename_here*. */
 	int input = 0;
 	int first = 1;
 	char* next = strchr(cmd, '|'); // Βρίσκουμε το πρώτο '|' το οποίο δηλώνει pipe
