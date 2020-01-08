@@ -4,7 +4,6 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
-
 #include "port.h"
 static char line[1024];
 
@@ -40,7 +39,7 @@ int main(int argc, char const *argv[])
 		printf(":> ");
 		fflush(NULL);
         memset(buffer, '\0', 1024*sizeof(char));
-		/* Read a command line */
+		// Ανάγνωση μιας εντολής
 		if (!fgets(line, 1024, stdin))
 			return 0;
         if (strcmp(line, "exit") == 10){
