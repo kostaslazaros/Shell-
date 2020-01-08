@@ -79,7 +79,7 @@ int run_children(char* cmd)
 	while (next != NULL) {
 		// 'next' points to '|'
 		*next = '\0';
-		input = run(cmd, input, first, 0); // Το input οδηγείται στην συνάρτηση run προκειμένου να εκτελεστεί(η run κανει έλεγχο του string για exit και καλει την συνάρτηση command)
+		input = run(cmd, input, first, 0);
 
 		cmd = next + 1;
 		next = strchr(cmd, '|'); // Εύρεση επόμενου '|'
