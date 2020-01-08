@@ -14,6 +14,7 @@ static char line[1024];
 int command(int input, int first, int last);
 void cleanup(int n);
 int runshell(char* argv);
+int run_children(char* cmd);
 int run(char* cmd, int input, int first, int last);
 void split(char* cmd);
 char* skipwhite(char* s);

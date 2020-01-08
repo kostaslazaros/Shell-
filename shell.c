@@ -1,40 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include "shellfunc.h"
 
 
 int main(int argc, char *argv[])
 {
-	if(argc == 2){
-		//Code for execution once
-
-		int input = 0;
-		int first = 1;
-
-		char* cmd = malloc(strlen(argv[1]) + 2);
-		strcpy(cmd, argv[1]);
-		strcat(cmd, "\n");
-
-		char* next = strchr(cmd, '|'); /* Find first '|' */
-
-		while (next != NULL) {
-			// To 'next' σημαδεύει τo '|'
-			*next = '\0';
-			input = run(cmd, input, first, 0);
-			cmd = next + 1;
-			next = strchr(cmd, '|'); // Εύρεση επόμενου '|'
-			first = 0;
-		}
-		input = run(cmd, input, first, 1);
+	if(argc == 2){ // Εκτέλεση με ορίσματα
+		/* Επειδή δοκιμάσαμε σαν argument το '|' και διαπιστώσαμε ότι δεν περνάνε τα ορίσματα,
+		μέσα στην main, αποφασίσαμε να χρησιμοποιούμε ένα εξτρα argument με χρήση διπλών εισαγωγικών (πχ: "argument") */
+		runshell(argv[1]);
 		return 0;
 	}
 
+	// Εκτέλεση διαδραστικά
 	printf("SHELL: Type 'exit' or send EOF to exit.\n");
 	while (1) {
 		// Εκτύπωση του command prompt
@@ -44,24 +22,7 @@ int main(int argc, char *argv[])
 		// Ανάγνωση εντολής
 		if (!fgets(line, 1024, stdin))
 			return 0;
-
-		int input = 0;
-		int first = 1;
-
-		char* cmd = line;
-		char* next = strchr(cmd, '|'); // Εύρεση του πρώτου '|'
-
-		while (next != NULL) {
-			/* 'next' points to '|' */
-			*next = '\0';
-			input = run(cmd, input, first, 0);
-			cmd = next + 1;
-			next = strchr(cmd, '|'); // Εύρεση του επόμενου '|'
-			first = 0;
-		}
-		input = run(cmd, input, first, 1);
-		cleanup(100);
+		run_children(line);
 	}
-
 	return 0;
 }

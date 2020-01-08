@@ -36,7 +36,7 @@ int command(int input, int first, int last) // Εκτέλεση εντολών �
 	if (input != 0)
 		close(input);
 
-	// Nothing more needs to be written
+	// Κλείνει το pipe (δεν χρειάζεται να γραφεί κάτι άλλο)
 	close(pipettes[WRITE]);
 
 	// Αν είναι η τελευταία εντολή τότε δεν χρειάζεται να διαβαστεί κάτι άλλο (pipe closing...)
@@ -55,30 +55,35 @@ void cleanup(int n) // Συνάρτηση αναμονής (καθυστέρησ
 }
 
 
-int runshell(char* argv)
+int runshell(char* argv) // Εκτέλεση του shell
 {
-		//Code for execution once
-		int input = 0;
-		int first = 1;
+	char* cmd = malloc(strlen(argv) + 2);
+	strcpy(cmd, argv);
+	strcat(cmd, "\n");
+	//Code for execution once
+	run_children(cmd);
+	free(cmd); // Απελευθέρωση μνήμης που δεσμεύτηκε με malloc
+	return 0;
+}
 
-		char* cmd = malloc(strlen(argv) + 2);
-		strcpy(cmd, argv);
-		strcat(cmd, "\n");
-		char* next = strchr(cmd, '|'); // Βρίσκουμε το πρώτο '|' το οποίο δηλώνει pipe
 
-		while (next != NULL) {
-			/* 'next' points to '|' */
-			*next = '\0';
-			input = run(cmd, input, first, 0); // Το input οδηγείται στην συνάρτηση run προκειμένου να εκτελεστεί(η run κανει έλεγχο του string για exit και καλει την συνάρτηση command)
+int run_children(char* cmd)
+{
+	int input = 0;
+	int first = 1;
+	char* next = strchr(cmd, '|'); // Βρίσκουμε το πρώτο '|' το οποίο δηλώνει pipe
+	while (next != NULL) {
+		// 'next' points to '|'
+		*next = '\0';
+		input = run(cmd, input, first, 0); // Το input οδηγείται στην συνάρτηση run προκειμένου να εκτελεστεί(η run κανει έλεγχο του string για exit και καλει την συνάρτηση command)
 
-			cmd = next + 1;
-			next = strchr(cmd, '|'); /* Find next '|' */
-			first = 0;
-		}
-		input = run(cmd, input, first, 1);
-		cleanup(100);
-		free(cmd); // Απελευθέρωση μνήμης που δεσμεύτηκε με malloc
-		return 0;
+		cmd = next + 1;
+		next = strchr(cmd, '|'); // Εύρεση επόμενου '|'
+		first = 0;
+	}
+	input = run(cmd, input, first, 1);
+	cleanup(100);
+	return 0;
 }
 
 
