@@ -1,3 +1,11 @@
+/**********************************************************
+*           Shell and client server programs              *
+*   Made by: Konstantinos Lazaros - Nefeli Stefanatou     *
+*	           Lesson: Advanced Programming               *
+*	           D.I.B, University of Thessaly              *
+**********************************************************/
+
+
 #ifndef SHELL_FUNCTIONS_1
 #define SHELL_FUNCTIONS_1
 

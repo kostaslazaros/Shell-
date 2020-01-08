@@ -1,3 +1,11 @@
+/**********************************************************
+*           Shell and client server programs              *
+*   Made by: Konstantinos Lazaros - Nefeli Stefanatou     *
+*	           Lesson: Advanced Programming               *
+*	           D.I.B, University of Thessaly              *
+**********************************************************/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
