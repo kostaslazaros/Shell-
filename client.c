@@ -44,14 +44,14 @@ int main(int argc, char const *argv[])
     // Ο client στέλνει μήνυμα στον server και περιμένει την απάντηση από τον server
     printf("Connected on server port %i\n", PORT); // Ο client συνδέθηκε με επιτυχία (εκτύπωση αντίστοιχου μηνύματος)
     while(1){
-		printf(":> ");
+		printf(":~> ");
 		fflush(NULL);
         memset(buffer, '\0', 1024*sizeof(char));
 		// Ανάγνωση μιας εντολής
 		if (!fgets(line, 1024, stdin))
 			return 0;
         if (strcmp(line, "exit") == 10){
-            send(sock, "terminate", strlen("terminate"), 0); // Σε περίπτωση αποσύνδεσης το socket κάνει terminate
+            send(sock, "terminate\n", strlen("terminate\n"), 0); // Σε περίπτωση αποσύνδεσης το socket κάνει terminate
 			exit(0);
         }
         send(sock , line , strlen(line) , 0 );
