@@ -16,6 +16,8 @@
 #include <sys/wait.h>
 #include "shellfunc.h"
 
+pid_t pid;
+int command_pipe[2];
 
 int command(int input, int first, int last) // Εκτέλεση εντολών και redirection (για τα pipes)
 {

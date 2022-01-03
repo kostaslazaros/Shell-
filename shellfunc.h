@@ -11,8 +11,7 @@
 
 static char line[1024];
 static char* args[512];
-pid_t pid;
-int command_pipe[2];
+
 
 #define READ  0
 #define WRITE 1

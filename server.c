@@ -15,6 +15,8 @@
 #include "port.h"
 #include "shellfunc.h"
 
+#define SO_REUSEPORT 15
+
 int main(int argc, char const *argv[])
 {
     int server_fd, new_socket, valread;
